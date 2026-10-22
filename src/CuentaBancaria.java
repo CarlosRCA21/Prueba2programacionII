@@ -6,20 +6,22 @@ public class CuentaBancaria {
 
     //atributos
     protected int numero;
-    protected String cliente;
+    protected String cliente, moneda;
     protected double saldo;
     protected double tasa;
-    protected Calendar creacion;
-    protected ArrayList<String> historial;
+    protected Calendar apertura;
+    
+    protected String[] historial = new String[50];
+    protected int cantiMovimientos = 0;
+    
 
     public CuentaBancaria(int numero, String cliente, double tasa){
         this.numero = numero;
         this.cliente = cliente;
         this.tasa = tasa;
         this.saldo = 500;
-        this.creacion = Calendar.getInstance();
-        this.historial = new ArrayList<>();
-        this.historial.add("Cuenta creada con saldo inicial de 500lps ");
+        this.apertura = Calendar.getInstance();
+       
 
     }
 
@@ -29,7 +31,6 @@ public class CuentaBancaria {
                System.out.println("Insuficiente saldo");
            }else{
                saldo += monto;
-               historial.add("Deposito : "+monto);
            }
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -39,18 +40,9 @@ public class CuentaBancaria {
     public boolean retirar(double monto){
         if (monto>0 && saldo>=monto) {
             saldo-=monto;
-            historial.add("Retiro : - "+monto);
             return true;
         }else{
-            historial.add("Intento de retiro fallido: "+monto);
            return false;
-        }
-    }
-
-    public void mostrarHistorial(){
-        System.out.println("===== HISTORIAL DE "+cliente.toUpperCase()+ "=====");
-        for(String registro: historial){
-            System.out.println(registro);
         }
     }
 
@@ -68,7 +60,6 @@ public class CuentaBancaria {
         if (this.retirar(monto)) {
 
             destino.retirar(monto);
-            this.historial.add("Transferencia enviada a # "+destino.numero+ " : " +monto);
 
         }else{
             System.out.println("Transferencia fallida ");

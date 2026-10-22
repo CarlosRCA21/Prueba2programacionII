@@ -27,7 +27,7 @@ public class CuentaAhorro extends CuentaBancaria {
         if (status()) {
             double intereses = saldo*tasa;
             depositar(intereses);
-            historial.add("Intereses aplicados: +"+intereses);
+         
         }
     }
     //hacer retirar, evaluar estatus y cant max de retiro, tomar en consideracion ult fecha modifica y cuantos retiros lleva
