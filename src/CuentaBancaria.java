@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import java.util.Calendar;
 
 
@@ -47,6 +47,14 @@ public class CuentaBancaria {
     }
 
 
+    public void reintegrar(double monto){
+        if(monto>0){
+            saldo += monto;
+            historial[cantiMovimientos] = "Reversa : +"+monto;
+            cantiMovimientos++;
+        }
+    }
+
     public double getSaldo(){
         return saldo;
     }
@@ -64,7 +72,6 @@ public class CuentaBancaria {
         }else{
             System.out.println("Transferencia fallida ");
         }
-
 
     }
 
