@@ -3,33 +3,50 @@ import java.util.Calendar;
 
 public class CuentaAhorro extends CuentaBancaria {
 
-    //Atributos
-
-    private Calendar ultimaModif;
-    private int retirosRealizados = 0;
-    private static final int MAX_RETIROS_MES=3;
-
-
-    public CuentaAhorro(int cuenta, String cliente){
-        super(cuenta, cliente, 0.03);
-        this.ultimaModif = Calendar.getInstance();
+    private Calendar ultimoUso;
+    
+    public CuentaAhorro(int numero, String cliente, String moneda) {
+        super(numero, cliente, moneda);
+        this.tipo = TipoCuenta.AHORRO;
+        this.ultimoUso = Calendar.getInstance();
+    }
+    private boolean estaActiva() {
+        if (ultimoUso == null) return false;
+        
+        Calendar limite = Calendar.getInstance();
+        limite.add(Calendar.MONTH, -6);
+        return ultimoUso.after(limite);
     }
 
-    public boolean status(){
-
-        Calendar fechaActual=Calendar.getInstance();
-        fechaActual.add(Calendar.MONTH, -6);
-        return ultimaModif.after(fechaActual);
-
-    }
-
-    public void aplicarIntereses(){
-        if (status()) {
-            double intereses = saldo*tasa;
-            depositar(intereses);
-         
+    @Override
+    public void depositar(double monto) {
+        if (!estaActiva()) {
+            throw new IllegalStateException("La cuenta esta inactiva por falta de uso en 6 meses.");
         }
+        super.depositar(monto);
+        ultimoUso = Calendar.getInstance();
     }
-    //hacer retirar, evaluar estatus y cant max de retiro, tomar en consideracion ult fecha modifica y cuantos retiros lleva
 
+    @Override
+    public boolean retirar(double monto) {
+        if (!estaActiva()) {
+            throw new IllegalStateException("La cuenta esta inactiva por falta de uso en 6 meses.");
+        }
+        boolean exito = super.retirar(monto);
+        if (exito) {
+            ultimoUso = Calendar.getInstance();
+        }
+        return exito;
+    }
+
+    @Override
+    public void quienSoy() {
+        System.out.println("Soy una CuentaAhorro");
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | Ultimo uso: " + (ultimoUso != null ? ultimoUso.getTime() : "Sin uso");
+    }
+    
 }
